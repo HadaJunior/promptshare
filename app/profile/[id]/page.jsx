@@ -1,61 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-import { revalidatePath } from "next/cache";
 import Profile from "@components/Profile";
 
-const PersonalProfile = ({ params }) => {
-  const { data: session } = useSession();
-  const router = useRouter();
-  const parameter = useSearchParams();
-  const name = parameter.get("name");
-  const id = params.id.toString();
+const UserProfile = ({ params }) => {
+  const searchParams = useSearchParams();
+  const userName = searchParams.get("name");
 
-  const [posts, setPosts] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await fetch(`/api/users/${id}/posts`);
-      const data = await res.json();
-      setPosts(data);
+      const response = await fetch(`/api/users/${params?.id}/posts`);
+      const data = await response.json();
+
+      setUserPosts(data);
     };
-    fetchPosts();
-  }, []);
 
-  const handleDelete = async (post) => {
-    const hasConfirmed = confirm("Are you sure you want to delete this post?");
+    if (params?.id) fetchPosts();
+  }, [params.id]);
 
-    if (hasConfirmed) {
-      try {
-        await fetch(`/api/prompt/${post._id.toString()}`, {
-          method: "DELETE",
-        });
-
-        const filteredPosts = posts.filter((p) => p._id !== post._id);
-        setPosts(filteredPosts);
-        revalidatePath("/profile");
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  const handleEdit = (post) => {
-    router.push(`/update-prompt?id=${post._id}`);
-  };
-  const fullname = posts.map((post) => post.creator.name);
   return (
     <Profile
-      name={fullname || "Personal"}
-      desc={`Welcome to ${fullname} personalized profile page`}
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
+      name={userName}
+      desc={`Welcome to ${userName}'s personalized profile page. Explore ${userName}'s exceptional prompts and be inspired by the power of their imagination`}
+      data={userPosts}
     />
   );
 };
 
-export default PersonalProfile;
+export default UserProfile;
