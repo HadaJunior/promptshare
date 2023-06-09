@@ -27,7 +27,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
           <Image
-            src={post.creator.image}
+            src={post.creator?.image}
             alt="user_image"
             width={40}
             height={40}
@@ -42,10 +42,10 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
                 );
               }}
             >
-              {post.creator.username}
+              {post.creator?.username}
             </h3>
             <p className="text-sm font-inter text-gray-500">
-              {post.creator.email}
+              {post.creator?.email}
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         #{post.tag}
       </p>
 
-      {session?.user.id === post.creator._id && pathname === "/profile" && (
+      {session?.user.id === post.creator?._id && pathname === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
           <p
             className="font-inter text-sm green_gradient cursor-pointer"
@@ -87,7 +87,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         </div>
       )}
 
-      {session?.user.id === post.creator._id &&
+      {session?.user.id === post.creator?._id &&
         pathname === `/profile/${session?.user?.id}` && (
           <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
             <p
@@ -104,7 +104,6 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
             </p>
           </div>
         )}
-   
     </div>
   );
 };
